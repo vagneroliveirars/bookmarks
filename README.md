@@ -2,13 +2,11 @@
 
 ## Como rodar o projeto
 
-Para subir o projeto
-
 Baixe os fontes do projeto e execute:
 
 mvn spring-boot:run
 
-Em seguida acesse http://localhost:8080/{user}/bookmarks
+Em seguida acesse http://localhost:8080/bookmarks
 
-Exemplo: http://localhost:8080/jhoeller/bookmarks
+Tutorial Building REST services with Spring: https://spring.io/guides/tutorials/bookmarks
 

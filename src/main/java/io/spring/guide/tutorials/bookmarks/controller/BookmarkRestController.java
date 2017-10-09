@@ -1,6 +1,7 @@
 package io.spring.guide.tutorials.bookmarks.controller;
 
 import java.net.URI;
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,7 +22,7 @@ import io.spring.guide.tutorials.bookmarks.repository.BookmarkRepository;
 import io.spring.guide.tutorials.bookmarks.restResource.BookmarkResource;
 
 @RestController
-@RequestMapping("/{userId}/bookmarks")
+@RequestMapping("/bookmarks")
 public class BookmarkRestController {
 	
 	private final BookmarkRepository bookmarkRepository;
@@ -36,22 +37,22 @@ public class BookmarkRestController {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET)
-	Resources<BookmarkResource> readBookmarks(@PathVariable String userId) {
-		this.validateUser(userId);
+	Resources<BookmarkResource> readBookmarks(Principal principal) {
+		this.validateUser(principal);
 		
 		List<BookmarkResource> bookmarkResourceList = bookmarkRepository
-				.findByAccountUsername(userId).stream().map(BookmarkResource::new)
+				.findByAccountUsername(principal.getName()).stream().map(BookmarkResource::new)
 				.collect(Collectors.toList());
 
 		return new Resources<>(bookmarkResourceList);
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<?> add(@PathVariable String userId, @RequestBody Bookmark bookmark) {
-		this.validateUser(userId);
+	public ResponseEntity<?> add(Principal principal, @RequestBody Bookmark bookmark) {
+		this.validateUser(principal);
 		
 		return this.accountRepository
-				.findByUsername(userId)
+				.findByUsername(principal.getName())
 				.map(account -> {
 					Bookmark result = this.bookmarkRepository
 							.save(new Bookmark(account, bookmark.uri, bookmark.description));
@@ -64,15 +65,15 @@ public class BookmarkRestController {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value="/{bookmarkId}")
-	public BookmarkResource readBookmark(@PathVariable String userId, @PathVariable Long bookmarkId) {
-		this.validateUser(userId);
+	public BookmarkResource readBookmark(Principal principal, @PathVariable Long bookmarkId) {
+		this.validateUser(principal);
 		
 		return new BookmarkResource(this.bookmarkRepository.findOne(bookmarkId));
 	}
 
-	private void validateUser(String userId) {
-		this.accountRepository.findByUsername(userId).orElseThrow(
-				() -> new UserNotFoundException(userId));
+	private void validateUser(Principal principal) {
+		this.accountRepository.findByUsername(principal.getName()).orElseThrow(
+				() -> new UserNotFoundException(principal.getName()));
 	}
 
 }
