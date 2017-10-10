@@ -1,11 +1,12 @@
 package io.spring.guide.tutorials.bookmarks.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Bookmark {
@@ -17,9 +18,11 @@ public class Bookmark {
     @JsonIgnore
     @ManyToOne
     private Account account;
-    
+
+    @NotEmpty(message = "Uri is required")
     public String uri;
-    
+
+    @NotEmpty(message = "Description is required")
     public String description;
 
     public Bookmark() {
