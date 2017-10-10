@@ -1,25 +1,21 @@
 package io.spring.guide.tutorials.bookmarks.controller;
 
-import java.net.URI;
-import java.security.Principal;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Resources;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import io.spring.guide.tutorials.bookmarks.exception.UserNotFoundException;
 import io.spring.guide.tutorials.bookmarks.model.Bookmark;
 import io.spring.guide.tutorials.bookmarks.repository.AccountRepository;
 import io.spring.guide.tutorials.bookmarks.repository.BookmarkRepository;
 import io.spring.guide.tutorials.bookmarks.restResource.BookmarkResource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Resources;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.net.URI;
+import java.security.Principal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/bookmarks")
@@ -48,7 +44,7 @@ public class BookmarkRestController {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<?> add(Principal principal, @RequestBody Bookmark bookmark) {
+	public ResponseEntity<?> add(Principal principal,@Valid @RequestBody Bookmark bookmark) {
 		this.validateUser(principal);
 		
 		return this.accountRepository
